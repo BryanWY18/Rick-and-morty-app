@@ -1,0 +1,137 @@
+<img src="/images/22769598_6701110.jpg" alt="" class="fixed inset-0 w-full h-full object-cover -z-10 grayscale opacity-15" />
+<div class="fixed inset-0 -z-10 bg-zinc-950/90"></div>
+
+<section class="max-w-6xl mx-auto px-4 py-8">
+  <nav class="flex flex-col sm:flex-row sm:items-center justify-between mb-8">
+    <div class="flex justify-center sm:justify-start mb-6">
+      <button routerLink="/" class="flex items-center gap-3 px-5 py-2 rounded-lg bg-lime-400 text-zinc-950 font-semibold hover:bg-lime-300 transition shadow-lg shadow-lime-500/30 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+        </svg>
+        Inicio
+      </button>
+    </div>
+    <div>
+      <p class="text-right sm:text-right text-zinc-400 mb-2">
+        Conoce más de la serie, <br>solo por 
+        <a href="https://www.adultswim.com/rick-and-morty#top" target="_blank">
+          <img src="images/aslogo-v2.png" alt="Adult Swim" class="inline-block w-20 h-auto">
+        </a>
+      </p>      
+    </div>
+  </nav>
+
+  <h1 class="text-4xl p-2 md:text-5xl font-extrabold mb-8 text-center text-cyan-400 ">
+    <p class="mb-4">
+      Todos los personajes...
+    </p>
+    <p>
+      un solo lugar
+    </p>
+  </h1>
+
+  <div class="flex flex-col sm:flex-row flex-wrap gap-3 mb-10 justify-center">
+      <input
+        type="text"
+        [(ngModel)]="searchName"
+        placeholder="Buscar por nombre"
+        (keyup.enter)="applyFilters()"
+        class="px-4 py-2 rounded-lg bg-zinc-900/70 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:border-lime-400 focus:ring-1 focus:ring-lime-400/50 focus:outline-none transition w-full sm:w-auto"/>
+
+      <select
+        [(ngModel)]="searchStatus"
+        (change)="applyFilters()"
+        class="px-4 py-2 rounded-lg bg-zinc-900/70 border border-zinc-700 text-zinc-100 focus:border-lime-400 focus:ring-1 focus:ring-lime-400/50 focus:outline-none transition w-full sm:w-auto">
+        <option value="" class="bg-zinc-900 text-zinc-100">Todos los estados</option>
+        <option value="alive" class="bg-zinc-900 text-zinc-100">Vivo</option>
+        <option value="dead" class="bg-zinc-900 text-zinc-100">Muerto</option>
+        <option value="unknown" class="bg-zinc-900 text-zinc-100">Desconocido</option>
+      </select>
+
+      <input
+        type="text"
+        [(ngModel)]="searchSpecies"
+        placeholder="Buscar por especie"
+        (keyup.enter)="applyFilters()"
+        class="px-4 py-2 rounded-lg bg-zinc-900/70 border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:border-lime-400 focus:ring-1 focus:ring-lime-400/50 focus:outline-none transition w-full sm:w-auto" />
+
+      
+
+      <div class="flex gap-3 w-full mt-4 sm:w-auto sm:basis-full justify-center">
+        <button (click)="applyFilters()"
+          class="px-5 py-2 rounded-lg bg-lime-400 text-zinc-950 font-semibold hover:bg-lime-300 transition shadow-lg shadow-lime-500/30 cursor-pointer">
+          Buscar
+        </button>
+        <button (click)="clearFilters()" [disabled]="!searchName() && !searchStatus() && !searchSpecies()"
+          class="px-5 py-2 rounded-lg bg-zinc-800 text-zinc-200 border border-zinc-700 hover:bg-zinc-700 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+          Limpiar
+        </button>
+      </div>
+    </div>
+
+  @if (loading()) {
+    <p class="text-center text-zinc-400 py-10">Cargando personajes...</p>
+  }
+  @if (error()) {
+    <div class="text-center py-10">
+      <p class="text-red-400 mb-4">{{ error() }}</p>
+      <button (click)="loadCharacters(currentPage())"
+        class="px-4 py-2 bg-lime-400 text-zinc-950 font-semibold rounded-lg hover:bg-lime-300 transition">
+        Reintentar
+      </button>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (character of characters(); track character.id) {
+        <a [routerLink]="['/character', character.id]"
+          class="group bg-zinc-900/80 backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800 hover:border-lime-400/60 hover:shadow-lg hover:shadow-lime-500/20 hover:-translate-y-1 transition duration-200">
+          <img [src]="character.image" [alt]="character.name"
+            class="w-full h-56 object-cover" />
+          <div class="p-4">
+            <h2 class="text-lg font-semibold truncate text-zinc-100 group-hover:text-lime-300 transition">
+              {{ character.name }}
+            </h2>
+            <p class="text-sm text-zinc-400">
+              {{ character.species }} · {{ character.status }}
+            </p>
+          </div>
+        </a>
+      } @empty {
+        <p class="col-span-full text-center text-zinc-400">
+          No se encontraron personajes.
+        </p>
+      }
+    </div>
+
+    <div class="flex items-center justify-center gap-4 mt-10">
+      <button (click)="prevPage()" [disabled]="!info()?.prev"
+        class="px-4 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 hover:border-cyan-400 hover:text-cyan-300 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-zinc-700 disabled:hover:text-zinc-200">
+        Anterior
+      </button>
+      <span class="text-zinc-400">
+        Página <span class="text-lime-400 font-semibold">{{ currentPage() }}</span> de {{ info()?.pages }}
+      </span>
+      <button (click)="nextPage()" [disabled]="!info()?.next"
+        class="px-4 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 hover:border-cyan-400 hover:text-cyan-300 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-zinc-700 disabled:hover:text-zinc-200">
+        Siguiente
+      </button>
+    </div>
+  }
+
+  <dialog #alertDialog (click)="closeAlert()"
+    class="rounded-xl bg-zinc-900 text-zinc-100 border border-zinc-700 p-0 backdrop:bg-black/90 max-w-xs sm:max-w-md w-[90%] m-auto">
+    <div class="p-5 sm:p-8 text-center" (click)="$event.stopPropagation()">
+      <img src="images/morty.png" alt="" class="w-24 h-24 sm:w-32 sm:h-32 object-contain mx-auto mb-3 sm:mb-5" />
+      <h2 class="text-xl sm:text-2xl font-semibold mb-2 italic">Oh, geez!</h2>
+      <p class="text-zinc-400 text-sm sm:text-base mb-5 sm:mb-6">Necesitas al menos un filtro para buscar.</p>
+      <button (click)="closeAlert()"
+        class="px-5 sm:px-6 py-2 sm:py-3 rounded-lg bg-lime-400 text-zinc-950 font-semibold hover:bg-lime-300 transition cursor-pointer text-sm sm:text-base">
+        <span class="block mb-2">Da click aquí para cerrar</span>
+        <span class="block text-xs font-normal">O en donde sea...</span>
+      </button>
+    </div>
+  </dialog>
+
+</section>
