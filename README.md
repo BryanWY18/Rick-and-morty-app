@@ -1,59 +1,56 @@
-# RickAndMortyApp
+# Rick & Morty App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.30.
+Aplicación web desarrollada en **Angular 20** que consume la
+[Rick and Morty API](https://rickandmortyapi.com/) para explorar personajes
+de la serie, con listado paginado, búsqueda con filtros y una vista de detalle
+enriquecida.
 
-## Development server
+## Stack Tecnológico
 
-To start a local development server, run:
+- **Angular 20** — componentes standalone, signals, viewChild y control flow (`@if` / `@for`).
+- **Tailwind CSS v4** — estilos utilitarios y diseño responsivo.
+- **TypeScript** — modelos tipados para la respuesta de la API.
+- **RxJS** — manejo de las peticiones HTTP.
 
-```bash
-ng serve
-```
+## Funcionalidades
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Listado **paginado** de personajes con grid responsivo.
+- **Búsqueda y filtros** por nombre, estado y especie.
+- **Vista de detalle** con imagen, estado, especie, género, origen y ubicación.
+- **Episodios**: las URLs de episodios se transforman en nombres reales
+  mediante una petición múltiple a la API.
+- **Lazy loading** de las vistas mediante `loadComponent`.
+- Estados de **carga** y **error** manejados explícitamente.
+- **Animaciones** vía hojas de estilo.
+- Diseño **responsivo** (móvil, tablet y escritorio)
 
-## Code scaffolding
+## Decisiones técnicas
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Signals** para el estado de cada vista, aprovechando reactividad de Angular.
+- **Component input binding** (`withComponentInputBinding`) para leer el parámetro
+  de ruta `:id` como un `input.required`, en lugar de inyectar `ActivatedRoute`.
+- Carga de episodios en **una sola petición** usando IDs separados por coma.
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Cómo ejecutarlo
 
 ```bash
-ng test
+npm install
+ng serve -o
 ```
 
-## Running end-to-end tests
+La app queda disponible en `http://localhost:4200`.
 
-For end-to-end (e2e) testing, run:
+## Estructura del proyecto
 
-```bash
-ng e2e
 ```
+src/app/
+├── models/        # Interfaces tipadas (Character, Episode, etc.)
+├── services/      # RickMortyService (peticiones a la API)
+└── pages/
+    ├── home/              # Página de bienvenida
+    ├── character-list/    # Listado paginado + filtros
+    └── character-detail/  # Detalle del personaje + episodios
+```
+## Para curiosos
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Vale la pena ser curioso y clickear en varios puntos, uno nunca sabe 😜
